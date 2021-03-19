@@ -10,7 +10,49 @@
 <div class="app">
   <main>
     <div class="page" id="home-page">123</div>
-    <div class="page"></div>
+    <div class="page" id="new-expense-page">
+      <div class="title">Nova Despesa</div>
+      <form id="new-expense-form">
+        <div class="input-wrapper">
+          <label for="expense-name">Nome</label>
+          <input id="expense-name" type="text">
+        </div>
+        <div class="input-wrapper">
+          <label for="expense-type">Categoria</label>
+          <select id="expense-type">
+            <option value="1">
+              Saude
+            </option>
+          </select>
+        </div>
+        <div class="input-wrapper">
+          <label for="expense-date">Data</label>
+          <input id="expense-date" type="text">
+        </div>
+        <div class="input-wrapper amount">
+          <label for="expense-amount">Valor</label>
+          <div>
+            <span>R$</span>
+            <input id="expense-amount" type="text">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="page" id="type-page" style="display: flex">
+      <div class="title">Categorias De Despesa</div>
+      <div class="list">
+        <div class="expense-type">
+          <div class="flex items-center">
+            <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
+            <div class="icon">Casa</div>
+          </div>
+          <div class="flex items-center">
+            <div class="limit">R$ 130,00</div>
+            <div class="options">...</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
   <footer class="nav-bar">
     <div>
