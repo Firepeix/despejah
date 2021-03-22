@@ -17,6 +17,10 @@ html, body {
     background: #ff4a57;
 }
 
+.subtitle-color {
+    color: #a4a4a4;
+}
+
 .offset-color {
     color: #ebebeb;
 }
@@ -26,8 +30,36 @@ html, body {
     display: flex;
 }
 
+.flex.column {
+    flex-direction: column;
+}
+
+.content-between {
+    justify-content: space-between;
+}
+
 .items-center {
     align-items: center;
+}
+
+.items-end {
+    align-items: flex-end;
+}
+
+.subtitle {
+    font-weight: 600;
+    color: #a4a4a4;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.sad-face {
+    width: 50%;
 }
 
 /* NAV BAR */
@@ -75,15 +107,21 @@ html, body {
     height: 100%;
 }
 
+header {
+    padding: 1.5rem;
+    padding-bottom: 0;
+}
+
+header > .title {
+    font-weight: 600;
+    font-size: 1.6rem;
+    display: none;
+}
+
 .page {
     display: none;
     padding: 1.5rem;
     flex-direction: column;
-}
-
-.page > .title {
-    font-weight: 600;
-    font-size: 1.6rem;
 }
 
 .page .input-wrapper {
@@ -104,7 +142,7 @@ form input, form select {
     border-bottom: 2px solid #ebebeb;
 }
 
-.amount > div{
+.amount > div {
     display: flex;
     align-items: flex-end;
 }
@@ -129,13 +167,106 @@ form input, form select {
 
 .list {
     display: flex;
-    padding-top: 1.5rem;
+    flex-direction: column;
+    padding-top: 1rem;
+}
+
+.list > div:not(:first-child) {
+    margin-top: 15px;
+}
+
+.btn {
+    width: 100%;
+    min-height: 30px;
+}
+
+.home {
+    display: flex;
+    flex-direction: column;
+}
+
+.home .title {
+    text-align: right;
+    font-weight: 600;
+}
+
+.home hr {
+    height: 4px;
+    border-radius: 4px;
+    border: none;
+    background: linear-gradient(to left,  black 45%,#ebebeb 45%);
+}
+
+.home .icon {
+    margin-bottom: 3px;
+    padding-right: 5px;
+}
+
+.home table {
+    width: 100%;
+    border-collapse: collapse;
+    padding-bottom: 1rem;
+}
+
+.home table tr:not(:last-child) {
+    border-bottom: 1px solid #ebebeb;
+}
+
+.home table th {
+    width: 60%;
+    font-weight: 400;
+}
+
+.home table th > div{
+    display: flex;
+    align-items: center;
+}
+
+.home table td {
+    text-align: right;
+    font-weight: 600;
+    color: #a4a4a4;
+}
+
+.expense {
+    display: flex;
+    border: black solid 2px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    line-height: 1;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.expense .amount {
+    padding-top: 2rem;
+    color: #ff4a57;
+}
+
+.expense div > div {
+    display: flex;
+    align-items: center;
+}
+
+.expense .date {
+    font-size: 15px;
+    color: #a4a4a4;
+}
+
+.expense .type {
+    padding-top: 1rem;
+    font-weight: 400;
+}
+
+.expense .icon {
+    margin-bottom: 3px;
 }
 
 .expense-type {
     display: flex;
     border: black solid 2px;
-    width: 100%;
     align-items: center;
     justify-content: space-between;
     padding: 5px;
@@ -147,7 +278,13 @@ form input, form select {
 
 .expense-type .icon {
     padding-right: 3px;
+    margin-bottom: 3px;
 }
+
 .expense-type .limit {
     color: #ff4a57;
+}
+
+.expense-type .options img {
+    padding-left: 5px;
 }
