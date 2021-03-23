@@ -25,6 +25,18 @@ html, body {
     color: #ebebeb;
 }
 
+.success-color {
+    color: #7fe1ad;
+}
+
+.negative-color {
+    color: #de4343;
+}
+
+.offset-color {
+    color: #ebebeb;
+}
+
 /*HELPERS*/
 .flex {
     display: flex;
@@ -60,6 +72,26 @@ html, body {
 
 .sad-face {
     width: 50%;
+}
+
+.badge {
+    text-transform: uppercase;
+    color: white;
+    border-radius: 8px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.badge.success {
+    background: #7fe1ad;
+}
+
+.badge.negative {
+    background: #de4343;
 }
 
 /* NAV BAR */
@@ -178,6 +210,7 @@ form input, form select {
 .btn {
     width: 100%;
     min-height: 30px;
+    border: none;
 }
 
 .home {
@@ -188,6 +221,71 @@ form input, form select {
 .home .title {
     text-align: right;
     font-weight: 600;
+}
+
+.home .charts {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 2rem;
+}
+
+.home .charts .type {
+    color: #a4a4a4;
+    text-align: center;
+    font-weight: 600;
+    padding-bottom: 6px;
+}
+
+.home .charts .chart {
+    border-radius: 100px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    box-sizing: border-box;
+    background: white;
+    position: relative;
+    margin-top: 10px;
+    font-weight: 600;
+    color: #0c59cf;
+}
+
+.charts > div:first-child .chart {
+    color: #e61610 !important;
+}
+
+.charts > div:last-child .chart {
+    color: #606060 !important;
+}
+
+.chart::before {
+    border-radius: 100%;
+    content: '';
+    top: -5px;
+    left: -5px;
+    bottom: -5px;
+    right: -5px;
+    position: absolute;
+    z-index:-1;
+    background-image: linear-gradient(to bottom, #ebebeb 50%, #0c59cf 50%);
+}
+
+.charts > div:first-child .chart::before {
+    background-image: linear-gradient(to bottom, #ebebeb 50%, #e61610 50%);
+}
+
+.charts > div:last-child .chart::before {
+    background-image: linear-gradient(to bottom, #ebebeb 50%, #606060 50%);
+}
+
+.home .status {
+    display: none;
+}
+
+.home .section {
+    padding-bottom: 1rem;
 }
 
 .home hr {
