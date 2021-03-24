@@ -150,10 +150,18 @@ header > .title {
     display: none;
 }
 
+header > .title.active {
+    display: block;
+}
+
 .page {
     display: none;
     padding: 1.5rem;
     flex-direction: column;
+}
+
+.page.active {
+    display: flex;
 }
 
 .page .input-wrapper {

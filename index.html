@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt_BR">
 <head>
   <meta charset="UTF-8">
   <title>DespeJah</title>
   <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
   <link rel="stylesheet" href="/src/css/main.css">
+  <script src="/src/js/app.js"> </script>
 </head>
 <body>
 <div class="app">
@@ -14,10 +15,10 @@
     <div class="title" id="new-expense-title">Nova Despesa</div>
     <div class="title" id="expenses-title">Despesas</div>
     <div class="title" id="none-home-title">Home</div>
-    <div class="title" id="home-title" style="display: block">Home</div>
+    <div class="title" id="home-title">Home</div>
   </header>
   <main>
-    <div class="page" id="home-page" style="display: flex">
+    <div class="page" id="home-page">
       <div class="home">
         <div class="title">
           <div>Maiores Despesas</div>
@@ -80,7 +81,7 @@
           <div class="badge success status">
             Dentro do Planejado
           </div>
-          <div class="badge negative status" style="display: flex">
+          <div class="badge negative status">
             Fora do Planejado
           </div>
         </div>
@@ -107,20 +108,20 @@
         <div class="input-wrapper">
           <label for="expense-type">Categoria</label>
           <select id="expense-type">
-            <option value="1">
-              Saude
+            <option>
+              Selecionar Categoria
             </option>
           </select>
         </div>
         <div class="input-wrapper">
           <label for="expense-date">Data</label>
-          <input id="expense-date" type="text">
+          <input id="expense-date" placeholder="dd/mm/yyyy" onkeyup="dateMask(this)" maxlength="10" type="tel">
         </div>
         <div class="input-wrapper amount">
           <label for="expense-amount">Valor</label>
           <div>
             <span>R$</span>
-            <input id="expense-amount" type="text">
+            <input id="expense-amount" value="0,00" onkeyup="amountMask(this)" maxlength="10" type="text">
           </div>
         </div>
       </form>
@@ -382,15 +383,15 @@
     </div>
   </main>
   <footer class="nav-bar">
-    <div>
+    <div onclick="goTo('home')">
       <img src="/src/icons/home.svg" alt="Home" class="icon">
       <span class="title">Home</span>
     </div>
-    <div class="main">
+    <div onclick="goTo('new-expense')" class="main">
       <img src="/src/icons/plus.svg" alt="Home" class="icon">
       <span class="title">Despesa</span>
     </div>
-    <div>
+    <div onclick="goTo('expenses')">
       <img src="/src/icons/list.svg" alt="Home" class="icon">
       <span class="title">Lista</span>
     </div>
