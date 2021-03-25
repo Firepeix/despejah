@@ -104,6 +104,7 @@
         <div class="input-wrapper">
           <label for="expense-name">Nome</label>
           <input id="expense-name" type="text">
+          <div class="error"></div>
         </div>
         <div class="input-wrapper">
           <label for="expense-type">Categoria</label>
@@ -112,10 +113,12 @@
               Selecionar Categoria
             </option>
           </select>
+          <div class="error"></div>
         </div>
         <div class="input-wrapper">
           <label for="expense-date">Data</label>
           <input id="expense-date" placeholder="dd/mm/yyyy" onkeyup="dateMask(this)" maxlength="10" type="tel">
+          <div class="error"></div>
         </div>
         <div class="input-wrapper amount">
           <label for="expense-amount">Valor</label>
@@ -123,6 +126,7 @@
             <span>R$</span>
             <input id="expense-amount" value="0,00" onkeyup="amountMask(this)" maxlength="10" type="text">
           </div>
+          <div class="error"></div>
         </div>
       </form>
     </div>
@@ -387,9 +391,13 @@
       <img src="/src/icons/home.svg" alt="Home" class="icon">
       <span class="title">Home</span>
     </div>
-    <div onclick="goTo('new-expense')" class="main">
+    <div onclick="goTo('new-expense')" class="main active" id="main-button">
       <img src="/src/icons/plus.svg" alt="Home" class="icon">
       <span class="title">Despesa</span>
+    </div>
+    <div onclick="submitExpense()" class="main"  id="submit-expense">
+      <img src="/src/icons/check-bold.svg" alt="Home" class="icon">
+      <span class="title">Salvar</span>
     </div>
     <div onclick="goTo('expenses')">
       <img src="/src/icons/list.svg" alt="Home" class="icon">
