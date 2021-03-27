@@ -1,8 +1,7 @@
 /*INIT*/
 onload = function () {
-  //goTo('home');
   setUp()
-  goTo('expenses');
+  goTo('home');
 };
 
 
@@ -154,10 +153,33 @@ function toggleMenu (menu, self = null) {
 function onHomeMounted () {
   const expenses = getExpenses();
   if (expenses.length > 0) {
+    constructHome(expenses)
     return;
   }
   goTo('none-home');
 }
+
+function constructHome (expenses = null) {
+  makeThreeBiggestExpenses(getThreeBiggestExpenses(expenses), getExpenseTypes(true));
+}
+
+function makeThreeBiggestExpenses (expenses, types) {
+  const template = document.querySelector('.template.expense-resume');
+  const body = document.querySelector('#biggest-body-table');
+  if (template !== null && body !== null) {
+    body.innerHTML = ''
+    expenses.forEach(function (expense) {
+      const expenseElement = template.cloneNode(true)
+      expenseElement.classList.remove('template');
+      expenseElement.setAttribute('data-id', expense.id)
+      expenseElement.querySelector('.name').innerHTML = expense.name
+      expenseElement.querySelector('.amount').innerHTML = 'R$ ' + toReal(expense.amount)
+      expenseElement.querySelector('.icon').src = '/src/icons/expense-types/' + types[expense.typeId].icon + '.svg'
+      body.appendChild(expenseElement)
+    })
+  }
+}
+
 
 /*EXPENSES*/
 
@@ -299,6 +321,15 @@ function exists (model) {
 
 function getExpenses () {
   return getModels('expenses').reverse();
+}
+
+function getThreeBiggestExpenses (expenses = null) {
+  let sortedExpenses = expenses === null ? getModels('expenses') : expenses
+  sortedExpenses = sortedExpenses.sort(function (expenseA, expenseB) {
+    return expenseA.amount > expenseB.amount ? -1 : 1
+  })
+
+  return sortedExpenses.slice(0, 3)
 }
 
 function saveExpense (expense) {
