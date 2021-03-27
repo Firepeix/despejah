@@ -5,7 +5,10 @@
   <title>DespeJah</title>
   <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
   <link rel="stylesheet" href="/src/css/main.css">
-  <script src="/src/js/app.js"> </script>
+  <script src="/src/js/app.js"></script>
+  <script src="/src/js/lib/sweetalert2.js"></script>
+  <script src="/src/js/lib/maska.js"></script>
+  <script src="/src/js/lib/simple-mask-money.js"></script>
 </head>
 <body>
 <div class="app">
@@ -26,35 +29,35 @@
         </div>
         <div class="section">
           <table>
-           <tbody>
-           <tr>
-             <th>
-               <div>
-                 <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-                 <div>Casa</div>
-               </div>
-             </th>
-             <td>R$ 450,00</td>
-           </tr>
-           <tr>
-             <th>
-               <div>
-                 <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-                 <div>Casa</div>
-               </div>
-             </th>
-             <td>R$ 450,00</td>
-           </tr>
-           <tr>
-             <th>
-               <div>
-                 <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-                 <div>Casa</div>
-               </div>
-             </th>
-             <td>R$ 450,00</td>
-           </tr>
-           </tbody>
+            <tbody>
+            <tr>
+              <th>
+                <div>
+                  <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
+                  <div>Casa</div>
+                </div>
+              </th>
+              <td>R$ 450,00</td>
+            </tr>
+            <tr>
+              <th>
+                <div>
+                  <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
+                  <div>Casa</div>
+                </div>
+              </th>
+              <td>R$ 450,00</td>
+            </tr>
+            <tr>
+              <th>
+                <div>
+                  <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
+                  <div>Casa</div>
+                </div>
+              </th>
+              <td>R$ 450,00</td>
+            </tr>
+            </tbody>
           </table>
         </div>
         <div class="title section">
@@ -86,7 +89,9 @@
           </div>
         </div>
         <div class="section">
-          <div><button class="btn secondary">Gerenciar Categorias</button></div>
+          <div>
+            <button class="btn secondary">Gerenciar Categorias</button>
+          </div>
         </div>
       </div>
     </div>
@@ -117,272 +122,26 @@
         </div>
         <div class="input-wrapper">
           <label for="expense-date">Data</label>
-          <input id="expense-date" placeholder="dd/mm/yyyy" onkeyup="dateMask(this)" maxlength="10" type="tel">
+          <input id="expense-date" data-mask="##/##/####" class="masked" placeholder="dd/mm/yyyy" maxlength="10" inputmode="numeric" type="text">
           <div class="error"></div>
         </div>
         <div class="input-wrapper amount">
           <label for="expense-amount">Valor</label>
           <div>
             <span>R$</span>
-            <input id="expense-amount" value="0,00" onkeyup="amountMask(this)" maxlength="10" type="text">
+            <input id="expense-amount" class="money" maxlength="10" value="0,00" inputmode="numeric" type="text">
           </div>
           <div class="error"></div>
         </div>
       </form>
     </div>
     <div class="page" id="type-page">
-      <div>
-        <button class="btn">Adicionar Categoria</button>
-      </div>
       <div class="list">
-        <div class="expense">
-          <div class="flex items-center">
-            <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-            <div>Casa</div>
-          </div>
-          <div class="flex items-center">
-            <div class="limit">R$ 130,00</div>
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-          </div>
-        </div>
-        <div class="expense-type">
-          <div class="flex items-center">
-            <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-            <div>Casa</div>
-          </div>
-          <div class="flex items-center">
-            <div class="limit">R$ 130,00</div>
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-          </div>
-        </div>
-        <div class="expense-type">
-          <div class="flex items-center">
-            <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-            <div>Casa</div>
-          </div>
-          <div class="flex items-center">
-            <div class="limit">R$ 130,00</div>
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
     <div class="page" id="expenses-page">
       <div class="list">
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
-        <div class="expense">
-          <div class="flex column content-between">
-            <div>Exame de Sangue</div>
-            <div class="date">22/02/2021</div>
-            <div class="type">
-              <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-              <div>Casa</div>
-            </div>
-          </div>
-          <div class="flex column items-end more">
-            <div class="options">
-              <img src="/src/icons/dots-vertical.svg" alt="Opções">
-            </div>
-            <div class="amount">R$ 130,00</div>
-          </div>
-        </div>
       </div>
     </div>
   </main>
@@ -395,7 +154,7 @@
       <img src="/src/icons/plus.svg" alt="Home" class="icon">
       <span class="title">Despesa</span>
     </div>
-    <div onclick="submitExpense()" class="main"  id="submit-expense">
+    <div onclick="submitExpense()" class="main" id="submit-expense">
       <img src="/src/icons/check-bold.svg" alt="Home" class="icon">
       <span class="title">Salvar</span>
     </div>
@@ -404,6 +163,50 @@
       <span class="title">Lista</span>
     </div>
   </footer>
+  <div class="templates">
+    <div class="template expense">
+      <div class="flex column content-between">
+        <div class="name">Exame de Sangue</div>
+        <div class="date">22/02/2021</div>
+        <div class="type">
+          <img src="/src/icons/expense-types/home.svg" style="margin-right: 6px" alt="Home" class="icon">
+          <div class="type-name">Casa</div>
+        </div>
+      </div>
+      <div class="flex column items-end more">
+        <div class="options" onclick="toggleMenu('expense-menu', this)">
+          <img src="/src/icons/dots-vertical.svg" alt="Opções">
+        </div>
+        <ul class="menu closed" id="expense-menu" style="height: 97px;">
+          <li>
+            <div class="flex items-center">
+              <img src="/src/icons/pencil.svg" alt="Editar" class="icon">
+              <div class="update">Editar</div>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <img src="/src/icons/minus-circle.svg" alt="Deletar" class="icon">
+              <div class="delete">Deletar</div>
+            </div>
+          </li>
+        </ul>
+        <div class="amount">R$ 130,00</div>
+      </div>
+    </div>
+    <div class="template expense-type">
+      <div class="flex items-center">
+        <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
+        <div>Casa</div>
+      </div>
+      <div class="flex items-center">
+        <div class="limit">R$ 130,00</div>
+        <div class="options">
+          <img src="/src/icons/dots-vertical.svg" alt="Opções">
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

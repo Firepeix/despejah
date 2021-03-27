@@ -147,12 +147,51 @@ main {
     color: white !important;
 }
 
+/*MENU*/
+.menu {
+    list-style: none;
+    overflow: hidden;
+    background-color: white;
+    padding: 0;
+    text-align: center;
+    -webkit-transition: height 0.3s ease;
+    transition: height 0.3s ease;
+    position: absolute;
+    margin: 15px 20px 0 0;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%);
+    z-index: 3;
+}
+
+.menu.closed {
+    height: 0 !important;
+}
+
+.menu li {
+    display: block;
+    color: black;
+    text-decoration: none;
+    padding: 10px 20px 10px 10px;
+}
+
+.menu li:not(:last-child) {
+    border-bottom: solid 1px #ebebeb;
+}
+
+.menu li img{
+    margin-right: 6px;
+}
+
 /*APP*/
 .app {
     display: flex;
     flex-direction: column;
     margin: 0;
     height: 100%;
+}
+
+.template, .templates {
+    display: none !important;
 }
 
 header {
@@ -196,6 +235,7 @@ form input, form select {
     margin-top: 5px;
     border: none;
     border-bottom: 2px solid #ebebeb;
+    background: white;
 }
 
 .amount > div {
@@ -375,6 +415,7 @@ form input, form select {
 .expense .date {
     font-size: 15px;
     color: #a4a4a4;
+    padding-top: 5px;
 }
 
 .expense .type {

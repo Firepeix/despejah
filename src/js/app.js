@@ -1,19 +1,39 @@
 /*INIT*/
 onload = function () {
   //goTo('home');
-  goTo('new-expense');
+  setUp()
+  goTo('expenses');
 };
 
+
+function setUp () {
+  window.params = {}
+  Maska.create('.masked');
+  SimpleMaskMoney.setMask('.money');
+}
+
 /*ROUTER*/
-function goTo (name) {
+
+function goTo (name, loadParams = {}) {
+  window.params = loadParams
   reveal(name, 'page');
   reveal(name, 'title');
+}
+
+function cleanParams () {
+  window.params = { }
 }
 
 function reveal (name, type) {
   const oldElement = document.querySelector('.' + type + '.active');
   if (oldElement !== null) {
     oldElement.classList.remove('active');
+    if (type === 'page') {
+      const disposed = onDisposed()[oldElement.id.replace('-page', '')];
+      if (disposed !== undefined) {
+        disposed();
+      }
+    }
   }
   const element = document.querySelector('.' + type + '#' + name + '-' + type);
   if (element !== null) {
@@ -28,70 +48,54 @@ function reveal (name, type) {
 }
 
 function onMounted () {
-  return { home: onHomeMounted, 'new-expense': onNewExpenseMounted };
+  return { home: onHomeMounted, 'new-expense': onNewExpenseMounted, expenses: onExpensesMounted };
+}
+
+function onDisposed () {
+  return { 'new-expense': onNewExpenseDisposed };
 }
 
 /*HELPERS*/
 
-function dateMask (self) {
-  let value = self.value.replace(/\D/g, '').slice(0, 10);
-  if (value.length >= 5) {
-    self.value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4);
-    return;
-  } else if (value.length >= 3) {
-    self.value = value.slice(0, 2) + '/' + value.slice(2);
-    return;
-  }
-  self.value = value;
+function coolAlert (type, title, message, time, onClose = null) {
+  Swal.fire({
+    title: title,
+    text: message,
+    showConfirmButton: false,
+    icon: type,
+    confirmButtonText: 'Cool',
+    timer: time,
+    willClose: onClose !== null ? onClose : function () {}
+  });
 }
 
-function amountMask (self) {
-  let value = self.value.replace(/\D/g, '');
-  if (value.slice(1, -1) === '00') {
-    self.value = '0,0' + value.slice(-1);
-    return;
-  }
-  if (value.slice(0, 2) === '00') {
-    self.value = '0,' + value.slice(-2);
-    return;
-  }
-
-  if (value.length === 3) {
-    self.value = value.slice(0, 1) + ',' + value.slice(1);
-    return;
-  }
-
-  if (value.length > 3) {
-    value = value.slice(0, value.length - 2) + ',' + value.slice(-2);
-    if (value.slice(0, 1) === '0') {
-      value = value.slice(1);
-    }
-    self.value = value;
-    return;
-  }
-
-  if (value === '') {
-    self.value = '0,00';
-    return;
-  }
-  self.value = value;
+function successAlert (message, onClose = null) {
+  coolAlert('success', 'Sucesso', message, 2000, onClose);
 }
 
 function toInt (value) {
-  return Number(value.replace(/\D/g, ''))
+  return Number(String(value).replace(/\D/g, ''));
+}
+
+function toReal (value) {
+  value = String((toInt(value) / 100).toFixed(2)).replace('.', ',').replace('-', '');
+  if (value.length > 6) {
+    value = value.slice(0, value.length - 6) + '.' + value.slice(value.length - 6);
+  }
+  return this.toInt() < 0 ? '-' + value : value;
 }
 
 function toDate (date, type) {
   if (type === 'model') {
-    return date.split('/').reverse().join('-')
+    return date.split('/').reverse().join('-');
   }
 
-  return date.split('-').reverse().join('/')
+  return date.split('-').reverse().join('/');
 }
 
 function validate (rules) {
   let valid = true;
-  cleanValidation()
+  cleanValidation();
   for (const index in rules) {
     if (rules.hasOwnProperty(index)) {
       const validate = rules[index];
@@ -107,8 +111,8 @@ function validate (rules) {
 
 function cleanValidation () {
   document.querySelectorAll('.error').forEach(function (error) {
-    error.innerHTML = ''
-  })
+    error.innerHTML = '';
+  });
 }
 
 function showValidateError (input, text, nested = 1) {
@@ -116,9 +120,9 @@ function showValidateError (input, text, nested = 1) {
   for (let i = 0; i < nested; i++) {
     parentElement = parentElement.parentNode;
   }
-  const error = parentElement.querySelector('.error')
+  const error = parentElement.querySelector('.error');
   if (error !== null) {
-    error.innerHTML = text
+    error.innerHTML = text;
   }
 
 }
@@ -134,6 +138,18 @@ function toggleMainButton (id) {
   }
 }
 
+/*MENU*/
+function toggleMenu (menu, self = null) {
+  let parent = document;
+  if (self !== null) {
+    parent = self.parentNode;
+  }
+  menu = parent.querySelector('.menu#' + menu)
+  if (menu !== null) {
+    menu.classList.toggle('closed')
+  }
+}
+
 /*HOME*/
 function onHomeMounted () {
   const expenses = getExpenses();
@@ -143,15 +159,76 @@ function onHomeMounted () {
   goTo('none-home');
 }
 
+/*EXPENSES*/
+
+function onExpensesMounted () {
+  constructExpenses();
+}
+
+function constructExpenses () {
+  const expenses = getExpenses()
+  if (expenses.length < 1) {
+    goTo('none-home');
+    return
+  }
+  setExpenses(getExpenses(), getExpenseTypes(true));
+}
+
+function setExpenses (expenses, types) {
+  const template = document.querySelector('.expense.template');
+  const list = document.querySelector('#expenses-page .list');
+  if (template !== null && list !== null) {
+    list.innerHTML = ''
+    expenses.forEach(function (expense) {
+      const expenseElement = template.cloneNode(true)
+      expenseElement.classList.remove('template');
+      expenseElement.setAttribute('data-id', expense.id)
+      expenseElement.querySelector('.name').innerHTML = expense.name
+      expenseElement.querySelector('.date').innerHTML = toDate(expense.date)
+      expenseElement.querySelector('.amount').innerHTML = 'R$ ' + toReal(expense.amount)
+      expenseElement.querySelector('.type-name').innerHTML = types[Number(expense.typeId)].name
+      expenseElement.querySelector('.icon').src = '/src/icons/expense-types/' + types[expense.typeId].icon + '.svg'
+      expenseElement.querySelector('.update').onclick = function () {
+        goTo('new-expense', { expense: expense, update: true })
+      }
+      expenseElement.querySelector('.delete').onclick = function () {
+        deleteModel(expense.id, 'expenses')
+        successAlert('Despesa deletada com sucesso', function () {
+          constructExpenses()
+        })
+      }
+
+      list.appendChild(expenseElement)
+    })
+  }
+}
+
 /*NEW EXPENSE*/
 
 function onNewExpenseMounted () {
   constructNewExpense();
 }
 
+function onNewExpenseDisposed () {
+  deconstructNewExpense()
+}
+
 function constructNewExpense () {
   addTypeOptions(getExpenseTypes());
-  toggleMainButton('submit-expense')
+  toggleMainButton('submit-expense');
+  loadSavedExpense()
+}
+
+function deconstructNewExpense () {
+  cleanInputs()
+  toggleMainButton('main-button');
+}
+
+function loadSavedExpense () {
+  if (params.update && params.expense !== undefined) {
+    setSavedExpense(params.expense)
+    cleanParams()
+  }
 }
 
 function addTypeOptions (types) {
@@ -165,16 +242,44 @@ function addTypeOptions (types) {
   }
 }
 
-function submitExpense () {
-  const inputs = {
+function setSavedExpense (expense) {
+  const inputs = getInputs()
+  inputs.nameInput.value = expense.name
+  inputs.typeInput.value = expense.typeId
+  inputs.dateInput.value = toDate(expense.date)
+  inputs.amountInput.value = toReal(expense.amount)
+  const form = document.querySelector('#new-expense-form')
+  form.setAttribute('data-id', expense.id)
+  form.setAttribute('update', 'true')
+}
+
+function cleanInputs () {
+  const inputs = getInputs()
+  inputs.nameInput.value = ''
+  inputs.typeInput.value = ''
+  inputs.dateInput.value = ''
+  inputs.amountInput.value = '0,00'
+}
+
+function getInputs () {
+  return {
     nameInput: document.querySelector('#expense-name'),
     typeInput: document.querySelector('#expense-type'),
     dateInput: document.querySelector('#expense-date'),
     amountInput: document.querySelector('#expense-amount')
   };
+}
+
+function submitExpense () {
+  const inputs = getInputs()
+  const form = document.querySelector('#new-expense-form')
 
   if (validate(getValidationRules(inputs))) {
-    saveExpense(makeExpense(null, inputs.nameInput.value, inputs.typeInput.value, inputs.dateInput.value, inputs.amountInput.value))
+    let id = null;
+    if (form.getAttribute('update') === 'true') {
+      id = Number(form.getAttribute('data-id'))
+    }
+    saveExpense(makeExpense(id, inputs.nameInput.value, inputs.typeInput.value, inputs.dateInput.value, inputs.amountInput.value));
   }
 }
 
@@ -189,32 +294,47 @@ function getValidationRules (inputs) {
 
 /*BACKEND*/
 function exists (model) {
-  return model.id !== 0 && model.id !== undefined && model.id !== null
+  return model.id !== 0 && model.id !== undefined && model.id !== null;
 }
 
 function getExpenses () {
-  return getModels('expenses');
+  return getModels('expenses').reverse();
 }
 
 function saveExpense (expense) {
   if (exists(expense)) {
+    updateModel(expense, 'expenses')
+    successAlert('Despesa editada com sucesso', function () {
+      goTo('expenses')
+    })
     return;
   }
 
-  insertModel(expense, 'expenses')
+  insertModel(expense, 'expenses');
+  successAlert('Despesa salva com sucesso!', function () {
+    goTo('home')
+  });
 }
 
 function makeExpense (id = null, name, typeId, date, amount) {
-  amount = isNaN(amount) ? toInt(amount) : amount
-  date = date.match(/\d{4}-\d{2}-\d{2}/) ? date : toDate(date, 'model')
+  amount = isNaN(amount) ? toInt(amount) : amount;
+  date = date.match(/\d{4}-\d{2}-\d{2}/) ? date : toDate(date, 'model');
   return { id: id, name: name, typeId: typeId, date: date, amount: amount };
 }
 
-function getExpenseTypes () {
-  let expenseTypes = localStorage.getItem('expenses-types') === null ? [] : localStorage.getItem('expenses-types');
+function getExpenseTypes (hash = false) {
+  let expenseTypes = getModels('expenses-types');
   if (expenseTypes.length < 1) {
     expenseTypes = getDefaultExpenseTypes();
   }
+  if (hash) {
+    const map = {}
+    expenseTypes.forEach(function (type) {
+      map[type.id] = type
+    })
+    return map;
+  }
+
   return expenseTypes;
 }
 
@@ -241,14 +361,34 @@ function generateId (string) {
   return hash > 0 ? hash : hash * -1;
 }
 
-function insertModel(model, table) {
-  const models =  localStorage.getItem(table) === null ? [] : localStorage.getItem(table);
-  model.id = generateId(JSON.stringify(model))
-  models.push(model)
-  localStorage.setItem(table, JSON.stringify(models))
+function insertModel (model, table) {
+  const models = getModels(table);
+  model.id = generateId(JSON.stringify(model));
+  models.push(model);
+  localStorage.setItem(table, JSON.stringify(models));
 }
 
-function getModels(table) {
-  const models =  localStorage.getItem(table) === null ? '[]' : localStorage.getItem(table);
-  return JSON.parse(models)
+function updateModel (model, table) {
+  const models = getModels(table);
+  const modelPos = models.findIndex(function (expense) {
+    return expense.id === model.id
+  })
+
+  if (modelPos !== -1) {
+    models[modelPos] = model
+    localStorage.setItem(table, JSON.stringify(models));
+  }
+}
+
+function deleteModel (id, table) {
+  let models = getModels(table);
+  models = models.filter(function (expense) {
+    return expense.id !== id
+  })
+
+  localStorage.setItem(table, JSON.stringify(models));
+}
+
+function getModels (table) {
+  return localStorage.getItem(table) === null ? [] : JSON.parse(localStorage.getItem(table));
 }
