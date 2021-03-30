@@ -348,6 +348,10 @@ form input, form select {
     display: none;
 }
 
+.home .status.active {
+    display: flex;
+}
+
 .home .section {
     padding-bottom: 1rem;
 }

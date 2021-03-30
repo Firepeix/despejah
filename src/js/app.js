@@ -11,6 +11,57 @@ function setUp () {
   SimpleMaskMoney.setMask('.money');
 }
 
+function setUpCharts () {
+  if (window.charts === undefined) {
+    window.charts = { fixed: { color: '#0c59cf' }, variable: { color: '#e61610' }, eve: { color: '#606060' } }
+    Object.keys(window.charts).forEach(function (chartId) {
+      const element = document.querySelector('.chart#' + chartId);
+      if (element !== null) {
+        const context = element.getContext('2d')
+        const color = window.charts[chartId].color;
+        window.charts[chartId] = new Chart(context, {
+          type: 'doughnut',
+          plugins: [{
+            id: 'text-in-donut',
+            afterDraw: function (chart, option) {
+              let theCenterText = window.charts[chartId].data.datasets[0].data[0].toFixed(0) + "%";
+              const canvasBounds = element.getBoundingClientRect();
+              const fontSz = Math.floor( canvasBounds.height * 0.18 ) ;
+              chart.ctx.textBaseline = 'middle';
+              chart.ctx.textAlign = 'center';
+              chart.ctx.font = 'bold ' + fontSz + 'px Arial ';
+              chart.ctx.fillStyle = color;
+              chart.ctx.fillText(theCenterText, canvasBounds.width/1.9, canvasBounds.height * 0.53 )
+            }
+          }],
+          options: {
+            legend: false,
+            tooltips: {
+              callbacks: {
+                label: function (tooltipItem, data) {
+                  return ' ' + data.labels[tooltipItem.index] + ': ' + data.datasets[0].data[tooltipItem.index] +'%'
+                }
+              }
+            }
+          },
+          data: {
+            datasets: [
+              {
+                data: [50, 50],
+                backgroundColor: [
+                  color,
+                  'rgba(235, 235, 235, 1)',
+                ],
+              }],
+            labels: ['Gasto', 'Restante']
+          },
+        });
+      }
+
+    })
+  }
+}
+
 /*ROUTER*/
 
 function goTo (name, loadParams = {}) {
@@ -47,7 +98,7 @@ function reveal (name, type) {
 }
 
 function onMounted () {
-  return { home: onHomeMounted, 'new-expense': onNewExpenseMounted, expenses: onExpensesMounted };
+  return { home: onHomeMounted, 'new-expense': onNewExpenseMounted, expenses: onExpensesMounted, type: onTypesMounted };
 }
 
 function onDisposed () {
@@ -152,15 +203,27 @@ function toggleMenu (menu, self = null) {
 /*HOME*/
 function onHomeMounted () {
   const expenses = getExpenses();
+  setUpCharts()
   if (expenses.length > 0) {
-    constructHome(expenses)
+    constructHome(expenses, getExpenseTypes())
     return;
   }
   goTo('none-home');
 }
 
-function constructHome (expenses = null) {
+function constructHome (expenses = null, types) {
   makeThreeBiggestExpenses(getThreeBiggestExpenses(expenses), getExpenseTypes(true));
+  const budgets = calculateBudgets(expenses, types)
+  makeStatus(budgets)
+  applyBudgets(budgets)
+}
+
+function applyBudgets (budgets) {
+  budgets.forEach(function (budget) {
+    window.charts[budget.chartId].data.datasets[0].data[0] = budget.filledPercentage > 100 ? 100 : budget.filledPercentage
+    window.charts[budget.chartId].data.datasets[0].data[1] = budget.filledPercentage > 100 ? 0 : 100 - budget.filledPercentage
+    window.charts[budget.chartId].update()
+  })
 }
 
 function makeThreeBiggestExpenses (expenses, types) {
@@ -177,6 +240,25 @@ function makeThreeBiggestExpenses (expenses, types) {
       expenseElement.querySelector('.icon').src = '/src/icons/expense-types/' + types[expense.typeId].icon + '.svg'
       body.appendChild(expenseElement)
     })
+  }
+}
+
+function makeStatus(budgets) {
+  const hasOverflow = budgets.filter(function (budget) {
+    return budget.overflow
+  }).length > 0;
+
+  revealStatus(hasOverflow ? 'negative' : 'success')
+}
+
+function revealStatus (type) {
+  const oldElement = document.querySelector('.status.active');
+  if (oldElement !== null) {
+    oldElement.classList.remove('active');
+  }
+  const element = document.querySelector('.status.' + type);
+  if (element !== null) {
+    element.classList.add('active');
   }
 }
 
@@ -314,7 +396,96 @@ function getValidationRules (inputs) {
   ];
 }
 
+/*EXPENSE TYPES*/
+
+function onTypesMounted () {
+  constructTypes();
+}
+
+function constructTypes () {
+  setExpensesTypes(getExpenseTypes());
+}
+
+function setExpensesTypes (types) {
+  const template = document.querySelector('.expense-type.template');
+  const list = document.querySelector('#type-page .list');
+  if (template !== null && list !== null) {
+    list.innerHTML = ''
+    types.forEach(function (type) {
+      const expenseElement = template.cloneNode(true)
+      expenseElement.classList.remove('template');
+      expenseElement.setAttribute('data-id', type.id)
+      expenseElement.querySelector('.name').innerHTML = type.name
+      expenseElement.querySelector('.limit').innerHTML = toReal(type.limit)
+      expenseElement.querySelector('.icon').src = '/src/icons/expense-types/' + type.icon + '.svg'
+      expenseElement.querySelector('.update').onclick = function () {
+        openUpdateTypeLimitModal(type)
+      }
+      list.appendChild(expenseElement)
+    })
+  }
+}
+
+function openUpdateTypeLimitModal (type) {
+  Swal.fire({
+    title: 'Insira novo limite.',
+    input: 'text',
+    inputValue: toReal(type.limit),
+    inputAttributes: {
+      inputmode: 'numeric'
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Salvar',
+    cancelButtonText: 'Cancelar',
+    didOpen: function () {
+      SimpleMaskMoney.setMask('.swal2-input');
+    }
+  }).then(function (result) {
+    if (result.isConfirmed) {
+      updateTypeLimit(type, toInt(result.value))
+    }
+  })
+}
+
+function updateTypeLimit(type, newLimit) {
+  type.limit = newLimit
+  updateModel(type, 'expense-types')
+  successAlert('Limite editado com sucesso', function () {
+    goTo('type')
+  })
+}
+
+
 /*BACKEND*/
+
+function calculateBudgets (expenses, types) {
+  const budgets = []
+  types.forEach(function (type) {
+    const budget = createBudget(type, expenses.filter(function (expense) {
+      return type.id === Number(expense.typeId)
+    }))
+    budgets.push(budget)
+  })
+
+  return budgets;
+}
+
+function createBudget(type, expenses) {
+  const expended = expenses.reduce(function (value, expense) {
+    return value + expense.amount
+  }, 0)
+
+  return {
+    typeId: type.id,
+    expenses: expenses,
+    limit: type.limit,
+    expended: expended,
+    overflow: type.limit < expended,
+    filledPercentage: (expended  * 100) / type.limit,
+    chartId: type.chartId
+  }
+}
+
 function exists (model) {
   return model.id !== 0 && model.id !== undefined && model.id !== null;
 }
@@ -354,7 +525,7 @@ function makeExpense (id = null, name, typeId, date, amount) {
 }
 
 function getExpenseTypes (hash = false) {
-  let expenseTypes = getModels('expenses-types');
+  let expenseTypes = getModels('expense-types');
   if (expenseTypes.length < 1) {
     expenseTypes = getDefaultExpenseTypes();
   }
@@ -370,11 +541,17 @@ function getExpenseTypes (hash = false) {
 }
 
 function getDefaultExpenseTypes () {
-  return [
-    { id: 1, name: 'Fixas', icon: 'food-fork-drink', limit: 60000 },
-    { id: 2, name: 'Variáveis', icon: 'car', limit: 30000 },
-    { id: 3, name: 'Eventuais', icon: 'tag', limit: 40000 }
+  const types = [
+    { id: 1, name: 'Fixas', icon: 'food-fork-drink', limit: 60000, chartId: 'fixed' },
+    { id: 2, name: 'Variáveis', icon: 'car', limit: 30000, chartId: 'variable' },
+    { id: 3, name: 'Eventuais', icon: 'tag', limit: 40000, chartId: 'eve' }
   ];
+
+  types.forEach(function (type) {
+    insertModel(type, 'expense-types')
+  })
+
+  return types;
 }
 
 function generateId (string) {
@@ -394,7 +571,7 @@ function generateId (string) {
 
 function insertModel (model, table) {
   const models = getModels(table);
-  model.id = generateId(JSON.stringify(model));
+  model.id = model.id !== undefined && model.id !== null ? model.id : generateId(JSON.stringify(model));
   models.push(model);
   localStorage.setItem(table, JSON.stringify(models));
 }

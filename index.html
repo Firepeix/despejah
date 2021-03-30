@@ -5,10 +5,13 @@
   <title>DespeJah</title>
   <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
   <link rel="stylesheet" href="/src/css/main.css">
+  <link rel="stylesheet" href="/src/libs/chart/Chart.css">
   <script src="/src/js/app.js"></script>
   <script src="/src/js/lib/sweetalert2.js"></script>
   <script src="/src/js/lib/maska.js"></script>
   <script src="/src/js/lib/simple-mask-money.js"></script>
+  <script src="/src/libs/chart/Chart.bundle.min.js"></script>
+  <script src="/src/libs/chart/Chart.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -40,16 +43,16 @@
         <div class="section">
           <div class="charts">
             <div class="flex column items-center">
-              <div class="type">Alimentação</div>
-              <div class="chart">64%</div>
+              <div class="type">Fixas</div>
+              <canvas class="chart" id="fixed" width="100" height="100"></canvas>
             </div>
             <div class="flex column items-center">
-              <div class="type">Jogos</div>
-              <div class="chart">40%</div>
+              <div class="type">Variáveis</div>
+              <canvas class="chart" id="variable" width="100" height="100"></canvas>
             </div>
             <div class="flex column items-center">
-              <div class="type">Uber</div>
-              <div class="chart">90%</div>
+              <div class="type">Eventuais</div>
+              <canvas class="chart" id="eve" width="100" height="100"></canvas>
             </div>
           </div>
         </div>
@@ -63,7 +66,7 @@
         </div>
         <div class="section">
           <div>
-            <button class="btn secondary">Gerenciar Categorias</button>
+            <button onclick="goTo('type')" class="btn secondary">Gerenciar Categorias</button>
           </div>
         </div>
       </div>
@@ -170,13 +173,21 @@
     <div class="template expense-type">
       <div class="flex items-center">
         <img src="/src/icons/expense-types/home.svg" alt="Home" class="icon">
-        <div>Casa</div>
+        <div class="name">Placeholder</div>
       </div>
       <div class="flex items-center">
-        <div class="limit">R$ 130,00</div>
-        <div class="options">
+        <div class="limit">R$ 000,00</div>
+        <div class="options" onclick="toggleMenu('type-menu', this)">
           <img src="/src/icons/dots-vertical.svg" alt="Opções">
         </div>
+        <ul class="menu closed" id="type-menu" style="height: 46px; right: 30px;">
+          <li>
+            <div class="flex items-center">
+              <img src="/src/icons/pencil.svg" alt="Editar" class="icon">
+              <div class="update">Editar</div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
     <table>
