@@ -16,12 +16,14 @@
 <body>
 <div class="app">
   <header>
-    <div></div>
     <div class="title" id="type-title">Categorias De Despesa</div>
     <div class="title" id="new-expense-title">Nova Despesa</div>
     <div class="title" id="expenses-title">Despesas</div>
     <div class="title" id="none-home-title">Home</div>
     <div class="title" id="home-title">Home</div>
+    <div class="logo">
+      DespeJá
+    </div>
   </header>
   <main>
     <div class="page" id="home-page">
@@ -122,19 +124,19 @@
     </div>
   </main>
   <footer class="nav-bar">
-    <div onclick="goTo('home')">
+    <div onclick="goTo('home')" class="ripple">
       <img src="/src/icons/home.svg" alt="Home" class="icon">
       <span class="title">Home</span>
     </div>
-    <div onclick="goTo('new-expense')" class="main active" id="main-button">
+    <div onclick="goTo('new-expense')" class="main active ripple" id="main-button">
       <img src="/src/icons/plus.svg" alt="Home" class="icon">
       <span class="title">Despesa</span>
     </div>
-    <div onclick="submitExpense()" class="main" id="submit-expense">
+    <div onclick="submitExpense()" class="main ripple" id="submit-expense">
       <img src="/src/icons/check-bold.svg" alt="Home" class="icon">
       <span class="title">Salvar</span>
     </div>
-    <div onclick="goTo('expenses')">
+    <div onclick="goTo('expenses')" class="ripple">
       <img src="/src/icons/list.svg" alt="Home" class="icon">
       <span class="title">Lista</span>
     </div>
@@ -150,7 +152,7 @@
         </div>
       </div>
       <div class="flex column items-end more">
-        <div class="options" onclick="toggleMenu('expense-menu', this)">
+        <div class="options ripple" onclick="toggleMenu('expense-menu', this)">
           <img src="/src/icons/dots-vertical.svg" alt="Opções">
         </div>
         <ul class="menu closed" id="expense-menu" style="height: 97px;">
@@ -177,7 +179,7 @@
       </div>
       <div class="flex items-center">
         <div class="limit">R$ 000,00</div>
-        <div class="options" onclick="toggleMenu('type-menu', this)">
+        <div class="options ripple" onclick="toggleMenu('type-menu', this)">
           <img src="/src/icons/dots-vertical.svg" alt="Opções">
         </div>
         <ul class="menu closed" id="type-menu" style="height: 46px; right: 30px;">

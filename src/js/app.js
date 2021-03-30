@@ -391,9 +391,21 @@ function getValidationRules (inputs) {
   return [
     { element: inputs.nameInput, check: inputs.nameInput.value !== '', error: 'Por favor preencha o nome da despesa!' },
     { element: inputs.dateInput, check: inputs.dateInput.value !== '', error: 'Por favor preencha a data que a despesa ocorreu!' },
+    { element: inputs.dateInput, check: validateDate(inputs.dateInput.value), error: 'Por favor preencha com uma data valida e no passado!' },
     { element: inputs.typeInput, check: !isNaN(inputs.typeInput.value), error: 'Por favor selecione uma categoria!' },
     { element: inputs.amountInput, check: toInt(inputs.amountInput.value) > 0, error: 'A despesa deve ter o valor maior que 0!', nested: 2 }
   ];
+}
+
+function validateDate (date) {
+  if (date !== '') {
+    const inputDate = new Date(toDate(date, 'model') + ' 00:00:00')
+    if (String(inputDate) === 'InvalidDate') {
+      return false;
+    }
+    return inputDate <= new Date();
+  }
+  return true;
 }
 
 /*EXPENSE TYPES*/

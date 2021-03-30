@@ -39,6 +39,23 @@ html, body {
 
 /*HELPERS*/
 
+.ripple {
+    background-position: center;
+    transition: background 0.8s;
+}
+
+.nav-bar .options.ripple:active {
+    background: #282828;
+    background-size: 100%;
+    transition: background 0s;
+}
+
+.nav-bar .ripple:active {
+    background: #ffbcc2;
+    background-size: 100%;
+    transition: background 0s;
+}
+
 .error {
     padding-top: 3px;
     color: red;
@@ -125,6 +142,7 @@ main {
     display: flex;
     padding: 0 0 6px 0;
     align-items: center;
+    width: 33%;
     flex-direction: column;
 }
 
@@ -197,6 +215,19 @@ main {
 header {
     padding: 1.5rem;
     padding-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+header .logo{
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+header .logo img{
+    width: 60px;
+    padding-right: 6px;
 }
 
 header > .title {
