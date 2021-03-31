@@ -1,4 +1,4 @@
-var cacheName = 'despeja-v1.0';
+var cacheName = 'despeja-v1.1';
 
 self.addEventListener('install', function () {
   caches.open(cacheName).then(function (cache) {

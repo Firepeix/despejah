@@ -95,6 +95,7 @@ html, body {
 
 .sad-face {
     width: 50%;
+    max-width: 170px;
 }
 
 .badge {
