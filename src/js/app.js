@@ -44,7 +44,9 @@ function setUpCharts () {
             }
           }],
           options: {
-            legend: false,
+            legend: {
+              display:false
+            },
             tooltips: {
               callbacks: {
                 label: function (tooltipItem, data) {
